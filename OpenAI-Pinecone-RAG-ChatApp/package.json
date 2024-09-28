@@ -1,0 +1,23 @@
+{
+  "name": "openai-pinecone-chatbot",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.2.10",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "@pinecone-database/pinecone": "^3.0.3",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "langchain": "^0.3.2",
+    "openai": "^4.38.2"
+  }
+}
