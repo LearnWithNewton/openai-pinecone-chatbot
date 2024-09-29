@@ -14,7 +14,7 @@ export async function splitText(document) {
     const response = await fetch(document);
     const text = await response.text();
   
-    const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 200, chunkOverlap: 20 });
+    const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 2000, chunkOverlap: 40 });
   
     const output = await splitter.createDocuments([text]);
     return output;

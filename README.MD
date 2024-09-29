@@ -37,7 +37,7 @@ Embeddings and vector databases allow developers to create tools that can retrie
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/openai-pinecone-chatbot.git
+    git clone https://github.com/LearnWithNewton/openai-pinecone-chatbot.git
     cd openai-pinecone-chatbot
     ```
 
