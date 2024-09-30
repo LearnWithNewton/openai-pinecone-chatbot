@@ -50,8 +50,10 @@ export async function queryVectors(queryVector) {
         }
       }
     );
-    console.log('Matching Query embeddings retrieved from Pinecone Database!', response);
-    return response;
+    const matches = response.matches;
+    const combinedMatches = matches.map(match => match.metadata.content).join("\n");
+    console.log('Matching Query embeddings retrieved from Pinecone Database!', combinedMatches);
+    return combinedMatches;
   } catch (error) {
     console.error('Error querying vectors:', error);
   }

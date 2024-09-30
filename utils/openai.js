@@ -12,40 +12,47 @@ const chatCompletionUrl = `https://api.openai.com/v1/chat/completions`;
 
 // Function to query the Pinecone index and generate embeddings
 export async function generateEmbeddings(document) {
-  const textChunks = await splitText(document);
-  const data = [];
+  
+  try {
+    const data = [];
+    const textChunks = await splitText(document);
 
-  for (const textChunk of textChunks) {
-    // Request to OpenAI for embeddings
-    const embeddingResponse = await axios.post(
-      embeddingUrl,
-      {
-        model: OPENAI_EMBEDDING_MODEL,
-        input: textChunk.pageContent,
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          'Content-Type': 'application/json;charset:UTF-8',
-          'Cache-Control': 'max-age=300',
-          'X-Content-Type-Options': 'no-sniff',
+    for (const textChunk of textChunks) {
+      // Request to OpenAI for embeddings
+      const embeddingResponse = await axios.post(
+        embeddingUrl,
+        {
+          model: OPENAI_EMBEDDING_MODEL,
+          input: textChunk.pageContent,
         },
-      }
-    );
+        {
+          headers: {
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Content-Type': 'application/json;charset:UTF-8',
+            'Cache-Control': 'max-age=300',
+            'X-Content-Type-Options': 'no-sniff',
+          },
+        }
+      );
 
-    data.push({
-      id: nextID(),
-      values: embeddingResponse.data.data[0].embedding,
-      metadata: { content: textChunk.pageContent },
-    });
+      data.push({
+        id: nextID(),
+        values: embeddingResponse.data.data[0].embedding,
+        metadata: { content: textChunk.pageContent },
+      });
+    }
+
+    console.log("Embeddings Generated using !" + OPENAI_CHAT_MODEL);
+    return data;
+  } catch (error) {
+    console.log("Error: " + error);
   }
 
-  console.log("Embeddings Generated using !" + OPENAI_CHAT_MODEL);
-  return data;
+
 }
 
 // Function to generate chat completion using ChatGPT model
-export async function chatCompletion(prompt, contexts , history = [], temperature = 0.1, frequencyPenalty = 0.0) {
+export async function chatCompletion(prompt, contexts, history = [], temperature = 0.1, frequencyPenalty = 0.0) {
   const messages = [
     history,
     { role: 'system', content: 'You are a helpful assistant.' },
@@ -70,7 +77,7 @@ export async function chatCompletion(prompt, contexts , history = [], temperatur
         },
       }
     );
-
+    messages.push(response.data.choices[0].message);
     const completion = response.data.choices[0].message.content;
     console.log("Chat Completion Response:", completion);
 

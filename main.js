@@ -15,34 +15,44 @@ form.addEventListener("submit", async function (e) {
     //pass prompt details to chatReply function
     main(input.value);
     input.values = '';
-    
+
 });
 
 async function main(prompt) {
-    chatReply.innerHTML = "Thinking...!";
-    
-    // Generate embeddings from query
-    const queryEmbeddings = await generateEmbeddings(prompt);
-    //console.log(queryEmbeddings);
-    
-    // query cosine similar vector embeddings based on query
-    const contexts = await queryVectors(queryEmbeddings[0].values);
-    console.log(contexts);
+    try {
+        chatReply.innerHTML = "Thinking...!";
 
-    //    
-    const chatResponse = await chatCompletion(prompt, contexts, [], 0.5, 0.2); // Set temperature to 0.5, frequency penalty to 0.2
-    console.log(chatResponse);
+        // Generate embeddings from query
+        const queryEmbeddings = await generateEmbeddings(prompt);
+        //console.log(queryEmbeddings);
 
-    chatReply.innerHTML = `<p>${ reply }</p>`
+        // query cosine similar vector embeddings based on query
+        const contexts = await queryVectors(queryEmbeddings[0].values);
+        console.log(contexts);
+
+        //    
+        const chatResponse = await chatCompletion(prompt, contexts, [], 0.5, 0.2); // Set temperature to 0.5, frequency penalty to 0.2
+        console.log(chatResponse);
+
+        chatReply.innerHTML = `<p>${reply}</p>`
+    } catch (error) {
+        console.log("Error: ", error);
+        chatReply.innerHTML = `<p>Sorry, some error occured! Please try again!</p>`
+    }
 }
 
 // write vectors into Pinecone index
 async function upsert() {
-    const embeddingsData = await generateEmbeddings(filePath);
+    try {
+        const embeddingsData = await generateEmbeddings(filePath);
 
-    console.log(embeddingsData);
+        console.log(embeddingsData);
 
-    await upsertVectors(embeddingsData);
+        await upsertVectors(embeddingsData);
+
+    } catch (error) {
+        console.log("Error: ", error);
+    }
 
 }
 
